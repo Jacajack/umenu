@@ -3,9 +3,9 @@ CFLAGS = -Wall -I./include
 LD = ld
 AR = ar
 
-all: clean force obj/umenu.o lib/umenu.a
+all: clean force obj/umenu.o lib/libumenu.a
 
-lib/umenu.a: obj/umenu.o
+lib/libumenu.a: obj/umenu.o
 	$(AR) -cvq $@ $^
 	$(AR) -t $@
 
@@ -19,4 +19,3 @@ force:
 clean:
 	-rm -rf obj
 	-rm -rf lib
-	
