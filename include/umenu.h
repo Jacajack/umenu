@@ -3,7 +3,7 @@
 #include <inttypes.h>
 
 //Value type macros + edit macro
-#define UMENU_NOVAL 0
+#define UMENU_SUB   0
 #define UMENU_INT   1
 #define UMENU_CHR   2
 #define UMENU_LST   3
@@ -12,10 +12,10 @@
 #define UMENU_EDIT  16
 
 //Key definitions
-#define UMENU_KEY_UP    1
-#define UMENU_KEY_DN    2
-#define UMENU_KEY_ENTER 3
-#define UMENU_KEY_BACK  4
+#define UMENU_KEY_UP     1
+#define UMENU_KEY_DN     2
+#define UMENU_KEY_ENTER  3
+#define UMENU_KEY_RETURN 4
 
 //Menu node
 struct umenunode
@@ -32,7 +32,7 @@ struct umenu
 {
 	const struct umenunode *tree;
 	int treesize;
-	struct umenunode *current, *parent;
+	const struct umenunode *current;
 
 	int editval;
 
