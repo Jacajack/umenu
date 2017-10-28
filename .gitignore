@@ -2,6 +2,7 @@ bin
 obj
 lib
 test.c
+test
 *.swp
 *.gch
 *.gno
