@@ -41,5 +41,7 @@ struct umenu
 	unsigned int : 0;
 };
 
+//Prototypes
 extern int umenuInteract( struct umenu *menu, int key );
+extern int umenuInit( struct umenu *menu, struct umenunode *tree, int treesize, struct umenunode *start );
 #endif
