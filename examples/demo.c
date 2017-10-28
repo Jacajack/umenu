@@ -6,9 +6,14 @@
 #include <string.h>
 #include <stdlib.h>
 
+int alive = 1;
+int clicks = 0;
+
 //The menu tree
 struct umenunode menutree[] =
 {
+	{ UMENU_ROOT },
+	{ 0, "clicks", UMENU_INT, &clicks, 0, NULL },
 	{ 0, "my menu", UMENU_SUB, NULL, 0, NULL },
 		{ 1, "some submenu 0", UMENU_SUB, NULL, 0, NULL },
 		{ 1, "some submenu 1", UMENU_SUB, NULL, 0, NULL },
@@ -18,10 +23,11 @@ struct umenunode menutree[] =
 	{ 0, "another option", UMENU_SUB, NULL, 0, NULL },
 	{ 0, "is cool", UMENU_SUB, NULL, 0, NULL },
 	{ 0, "and lovely", UMENU_SUB, NULL, 0, NULL },
+	{ UMENU_END }
 };
 #define MENU_SIZE ( sizeof( menutree ) / sizeof( menutree[0] ) ) 
 
-int alive = 1;
+
 
 void quit( int dummy )
 {
@@ -96,6 +102,8 @@ int main( int argc, char **argv )
 				quit( 1 );
 				break;
 		}
+		
+		clicks++;
 	}
 	
 	
