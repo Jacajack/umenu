@@ -2,14 +2,22 @@
 #define UMENU_H
 #include <inttypes.h>
 
-//Value type macros
-#define UMENU_NOSET
-#define UMENU_INT
-#define UMENU_CHR
-#define UMENU_LST
-#define UMENU_LINT
-#define UMENU_LCHR
+//Value type macros + edit macro
+#define UMENU_NOVAL 0
+#define UMENU_INT   1
+#define UMENU_CHR   2
+#define UMENU_LST   3
+#define UMENU_LINT  4
+#define UMENU_LCHR  5
+#define UMENU_EDIT  16
 
+//Key definitions
+#define UMENU_KEY_UP    1
+#define UMENU_KEY_DN    2
+#define UMENU_KEY_ENTER 3
+#define UMENU_KEY_BACK  4
+
+//Menu node
 struct umenunode
 {
 	int depth;		//Node's depth
@@ -24,14 +32,14 @@ struct umenu
 {
 	const struct umenunode *tree;
 	int treesize;
-	int current;
-	int parent;
+	struct umenunode *current, *parent;
 
 	int editval;
 
 	//Flags
-	unsigned int editmode;
-	
+	unsigned int editmode : 1;
+	unsigned int : 0;
 };
-#endif
 
+extern int umenuInteract( struct umenu *menu, int key );
+#endif
