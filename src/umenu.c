@@ -1,70 +1,8 @@
 #include <stddef.h>
-#include <umenu.h>
+#include <umenu/umenu.h>
+#include <umenu/core.h>
 
-static const struct umenunode *parentof( struct umenu *menu, const struct umenunode *node )
-{
-	const struct umenunode *entry = menu->current;
-	while ( ( --entry )->depth != UMENU_BOUNDARY )
-	{
-		if ( entry->depth == menu->current->depth - 1 )
-		{
-			return entry;
-		}
-	}
-	return NULL;
-}
 
-static const struct umenunode *umenuNext( struct umenu *menu )
-{
-	const struct umenunode *entry;
-	int depth;
-
-	//Validate all pointers
-	if ( menu == NULL || menu->tree == NULL || menu->current == NULL || menu->editmode || menu->watchmode ) return NULL;
-
-	//Remember the depth we are looking for
-	depth = menu->current->depth;
-
-	//Iterate through the nodes
-	entry = menu->current;
-	while ( ( ++entry )->depth != UMENU_BOUNDARY )
-	{
-		//The node we found becomes the current one
-		if ( entry->depth == depth )
-		{
-			menu->current = entry;
-			break;
-		}
-	}
-
-	return menu->current;
-}
-
-static const struct umenunode *umenuPrev( struct umenu *menu )
-{
-	const struct umenunode *entry;
-	int depth;
-
-	//Validate all pointers
-	if ( menu == NULL || menu->tree == NULL || menu->current == NULL || menu->editmode || menu->watchmode ) return NULL;
-
-	//Remember the depth we are looking for
-	depth = menu->current->depth;
-
-	//Iterate through the preceding nodes
-	entry = menu->current;
-	while ( ( --entry )->depth != UMENU_BOUNDARY )
-	{
-		//The node we found becomes the current one
-		if ( entry->depth == depth )
-		{
-			menu->current = entry;
-			break;
-		}
-	}
-
-	return menu->current;
-}
 
 static const struct umenunode *umenuEnter( struct umenu *menu )
 {
@@ -101,7 +39,7 @@ static const struct umenunode *umenuReturn( struct umenu *menu )
 		menu->watchmode = 0;
 	else
 	{
-		entry = parentof( menu, menu->current );
+		entry = umenuParent( menu->current );
 		if ( entry != NULL )
 		{
 			menu->current = entry;
@@ -115,6 +53,8 @@ static const struct umenunode *umenuReturn( struct umenu *menu )
 //Interacts with given menu - passes a keypress
 int umenuInteract( struct umenu *menu, int key )
 {
+	const struct umenunode *entry;
+
 	if ( menu == NULL ) return 1;
 
 	//Browse menu or change value - depending on whether edit mode is enabled
@@ -127,15 +67,24 @@ int umenuInteract( struct umenu *menu, int key )
 		switch ( key )
 		{
 			case UMENU_KEY_UP:
-				umenuPrev( menu );
+				entry = umenuPrev( menu->current );
+				if ( entry != NULL ) menu->current = entry;
 				break;
 
 			case UMENU_KEY_DN:
-				umenuNext( menu );
+				entry = umenuNext( menu->current );
+				if ( entry != NULL ) menu->current = entry;
 				break;
 
 			case UMENU_KEY_ENTER:
-				umenuEnter( menu );
+				if ( menu->current->vtype == UMENU_SUB )
+				{
+					entry = umenuEnter( menu );
+					if ( entry != NULL ) menu->current = entry;
+				}
+				else if ( menu->current->vtype & UMENU_EDIT ) menu->editmode = 1;
+				else menu->watchmode = 1;
+
 				break;
 
 			case UMENU_KEY_RETURN:
