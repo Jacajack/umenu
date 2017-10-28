@@ -12,6 +12,10 @@ lib/libumenu.a: obj/umenu.o
 obj/umenu.o: src/umenu.c
 	$(CC) $(CFLAGS) -c $^ -o $@
 
+examples: all
+	-mkdir bin
+	gcc -o bin/demo examples/demo.c -lncurses -Llib -lumenu -Iinclude -Wall
+
 force:
 	-mkdir obj
 	-mkdir lib
@@ -19,3 +23,4 @@ force:
 clean:
 	-rm -rf obj
 	-rm -rf lib
+	-rm -rf bin
