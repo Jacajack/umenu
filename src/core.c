@@ -66,3 +66,25 @@ const struct umenuentry *umenuPrev( const struct umenuentry *entry )
 
 	return NULL;
 }
+
+//Returns string containg name of the nth item from the list
+const char *umenuList( const char *list, int n )
+{
+	//Does list point to the start of new item?
+	int newitem = 1;
+
+	//Double NUL is list boundary
+	while ( list[0] != 0 || list[1] != 0 )
+	{
+		if ( newitem && n-- == 0 ) return list;
+
+		if ( list[0] == 0 )
+			newitem = 1;
+		else
+			newitem = 0;
+
+		list++;
+	}
+
+	return NULL;
+}
