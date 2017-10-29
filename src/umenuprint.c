@@ -5,7 +5,7 @@
 
 void umenuPrint( struct umenu *menu, int dispw, int disph, int x, int y, int (*printxy)( int x, int y, const char *format, ... ) )
 {
-	const struct umenunode *parent, *entry;
+	const struct umenuentry *parent, *entry;
 	int i;
 	const char *str;
 	char prefix;

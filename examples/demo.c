@@ -14,10 +14,10 @@ WINDOW *lcd;
 WINDOW *lcdframe;
 
 //The menu tree
-struct umenunode menutree[] =
+struct umenuentry menutree[] =
 {
 	{ UMENU_ROOT },
-	//{ 0, "clicks", UMENU_INT, &clicks, 0, NULL },
+	{ 0, "clicks", UMENU_INT, &clicks, 0, NULL },
 	{ 0, "my menu", UMENU_SUB, NULL, 0, NULL },
 		{ 1, "some submenu 0", UMENU_SUB, NULL, 0, NULL },
 		{ 1, "some submenu 1", UMENU_SUB, NULL, 0, NULL },

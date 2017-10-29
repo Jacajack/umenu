@@ -16,7 +16,7 @@
 #define UMENU_END UMENU_BOUNDARY
 
 //Menu node
-struct umenunode
+struct umenuentry
 {
 	int depth;		//Node's depth
 	const char *header; //Header text
@@ -26,9 +26,9 @@ struct umenunode
 	void *vlist; 	//List values
 };
 
-extern const struct umenunode *umenuParent( const struct umenunode *node );
-extern const struct umenunode *umenuChild( const struct umenunode *node );
-extern const struct umenunode *umenuNext( const struct umenunode *entry );
-extern const struct umenunode *umenuPrev( const struct umenunode *entry );
+extern const struct umenuentry *umenuParent( const struct umenuentry *node );
+extern const struct umenuentry *umenuChild( const struct umenuentry *node );
+extern const struct umenuentry *umenuNext( const struct umenuentry *entry );
+extern const struct umenuentry *umenuPrev( const struct umenuentry *entry );
 
 #endif

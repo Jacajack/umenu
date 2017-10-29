@@ -12,8 +12,8 @@
 
 struct umenu
 {
-	const struct umenunode *tree;
-	const struct umenunode *current;
+	const struct umenuentry *tree;
+	const struct umenuentry *current;
 
 	//Value of currently edited field
 	int editval;
@@ -26,5 +26,5 @@ struct umenu
 
 //Prototypes
 extern int umenuInteract( struct umenu *menu, int key );
-extern int umenuInit( struct umenu *menu, struct umenunode *tree, int treesize, struct umenunode *start );
+extern int umenuInit( struct umenu *menu, struct umenuentry *tree, int treesize, struct umenuentry *start );
 #endif

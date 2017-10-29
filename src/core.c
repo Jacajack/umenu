@@ -2,7 +2,7 @@
 #include <umenu/umenu.h>
 #include <stddef.h>
 
-const struct umenunode *umenuParent( const struct umenunode *node )
+const struct umenuentry *umenuParent( const struct umenuentry *node )
 {
 	int depth = node->depth;
 	while ( ( --node )->depth != UMENU_BOUNDARY )
@@ -15,7 +15,7 @@ const struct umenunode *umenuParent( const struct umenunode *node )
 	return NULL;
 }
 
-const struct umenunode *umenuChild( const struct umenunode *node )
+const struct umenuentry *umenuChild( const struct umenuentry *node )
 {
 	int depth = node->depth;
 	if ( node->vtype == UMENU_SUB )
@@ -28,7 +28,7 @@ const struct umenunode *umenuChild( const struct umenunode *node )
 	return NULL;
 }
 
-const struct umenunode *umenuNext( const struct umenunode *entry )
+const struct umenuentry *umenuNext( const struct umenuentry *entry )
 {
 	int depth;
 
@@ -51,7 +51,7 @@ const struct umenunode *umenuNext( const struct umenunode *entry )
 	return NULL;
 }
 
-const struct umenunode *umenuPrev( const struct umenunode *entry )
+const struct umenuentry *umenuPrev( const struct umenuentry *entry )
 {
 	int depth;
 

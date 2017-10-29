@@ -4,7 +4,7 @@
 
 
 
-static const struct umenunode *umenuEnter( struct umenu *menu )
+static const struct umenuentry *umenuEnter( struct umenu *menu )
 {
 	//Validate all pointers
 	if ( menu == NULL || menu->tree == NULL || menu->current == NULL ) return NULL;
@@ -26,9 +26,9 @@ static const struct umenunode *umenuEnter( struct umenu *menu )
 	return 0;
 }
 
-static const struct umenunode *umenuReturn( struct umenu *menu )
+static const struct umenuentry *umenuReturn( struct umenu *menu )
 {
-	const struct umenunode *entry;
+	const struct umenuentry *entry;
 
 	//Validate all pointers
 	if ( menu == NULL || menu->tree == NULL || menu->current == NULL ) return NULL;
@@ -53,7 +53,7 @@ static const struct umenunode *umenuReturn( struct umenu *menu )
 //Interacts with given menu - passes a keypress
 int umenuInteract( struct umenu *menu, int key )
 {
-	const struct umenunode *entry;
+	const struct umenuentry *entry;
 
 	if ( menu == NULL ) return 1;
 
@@ -100,7 +100,7 @@ int umenuInteract( struct umenu *menu, int key )
 }
 
 //Initializes umenu structure
-int umenuInit( struct umenu *menu, struct umenunode *tree, int treesize, struct umenunode *start )
+int umenuInit( struct umenu *menu, struct umenuentry *tree, int treesize, struct umenuentry *start )
 {
 	if ( menu == NULL || tree == NULL ) return 1;
 
