@@ -2,73 +2,66 @@
 #include <umenu/umenu.h>
 #include <stddef.h>
 
-const struct umenuentry *umenuParent( const struct umenuentry *node )
+//Returns pointer to parent menu entry or NULL if there's no parent
+const struct umenuentry *umenuParent( const struct umenuentry *entry )
 {
-	int depth = node->depth;
-	while ( ( --node )->depth != UMENU_BOUNDARY )
+	int depth;
+	if ( entry == NULL ) return NULL;
+
+	//Iterate till boundary encounter
+	depth = entry->depth;
+	while ( ( --entry )->depth != UMENU_BOUNDARY )
 	{
-		if ( node->depth == depth - 1 )
-		{
-			return node;
-		}
+		if ( entry->depth == depth - 1 )
+			return entry;
 	}
 	return NULL;
 }
 
-const struct umenuentry *umenuChild( const struct umenuentry *node )
+//Returns pointer to first child of menu entry or NULL if such doesn't exist
+const struct umenuentry *umenuChild( const struct umenuentry *entry )
 {
-	int depth = node->depth;
-	if ( node->vtype == UMENU_SUB )
+	int depth;
+	if ( entry == NULL ) return NULL;
+
+	//Iterate till boundary encounter
+	depth = entry->depth;
+	if ( entry->vtype == UMENU_SUB )
 	{
-		if ( node[1].depth != UMENU_BOUNDARY && node[1].depth == depth + 1 )
-		{
-			return node;
-		}
+		if ( entry[1].depth != UMENU_BOUNDARY && entry[1].vtype != UMENU_BOUNDARY && entry[1].depth == depth + 1 )
+			return entry;
 	}
 	return NULL;
 }
 
+//Returns next entry of the same depth or NULL if such doesn't exist
 const struct umenuentry *umenuNext( const struct umenuentry *entry )
 {
 	int depth;
-
-	//Validate all pointers
 	if ( entry == NULL ) return NULL;
 
-	//Remember the depth we are looking for
+	//Iterate till boundary encounter
 	depth = entry->depth;
-
-	//Iterate through the nodes
 	while ( ( ++entry )->depth != UMENU_BOUNDARY )
 	{
-		//The node we found becomes the current one
 		if ( entry->depth == depth )
-		{
 			return entry;
-		}
 	}
-
 	return NULL;
 }
 
+//Returns previous entry of the same depth or NULL if such doesn't exist
 const struct umenuentry *umenuPrev( const struct umenuentry *entry )
 {
 	int depth;
-
-	//Validate all pointers
 	if ( entry == NULL ) return NULL;
 
-	//Remember the depth we are looking for
+	//Iterate till boundary encounter
 	depth = entry->depth;
-
-	//Iterate through the nodes
 	while ( ( --entry )->depth != UMENU_BOUNDARY )
 	{
-		//The node we found becomes the current one
 		if ( entry->depth == depth )
-		{
 			return entry;
-		}
 	}
 
 	return NULL;

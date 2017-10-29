@@ -18,16 +18,17 @@
 //Menu node
 struct umenuentry
 {
-	int depth;		//Node's depth
+	int depth;		    //Node's depth
 	const char *header; //Header text
-	int vtype;		//Affected value type
-	void *vptr;		//Pointer to value affected by given setting
-	int vcnt;		//List option count
-	void *vlist; 	//List values
+	int vtype;		    //Affected value type
+	void *vptr;		    //Pointer to value affected by given setting
+	int vcnt;		    //List option count
+	void *vlist; 	    //List values
 };
 
-extern const struct umenuentry *umenuParent( const struct umenuentry *node );
-extern const struct umenuentry *umenuChild( const struct umenuentry *node );
+//Prototypes
+extern const struct umenuentry *umenuParent( const struct umenuentry *entry );
+extern const struct umenuentry *umenuChild( const struct umenuentry *entry );
 extern const struct umenuentry *umenuNext( const struct umenuentry *entry );
 extern const struct umenuentry *umenuPrev( const struct umenuentry *entry );
 
