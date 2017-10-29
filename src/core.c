@@ -28,8 +28,8 @@ const struct umenuentry *umenuChild( const struct umenuentry *entry )
 	depth = entry->depth;
 	if ( entry->vtype == UMENU_SUB )
 	{
-		if ( entry[1].depth != UMENU_BOUNDARY && entry[1].vtype != UMENU_BOUNDARY && entry[1].depth == depth + 1 )
-			return entry;
+		if ( entry[1].depth != UMENU_BOUNDARY && entry[1].depth == depth + 1 )
+			return entry + 1;
 	}
 	return NULL;
 }
