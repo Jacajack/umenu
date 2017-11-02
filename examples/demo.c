@@ -8,7 +8,10 @@
 #include <stdlib.h>
 #include <stdarg.h>
 
-int alive = 1;
+int lcdsimv = 3000;
+int foreground = 7;
+int background = 4;
+
 int clicks = 0;
 WINDOW *lcd;
 WINDOW *lcdframe;
@@ -17,30 +20,20 @@ WINDOW *lcdframe;
 struct umenuentry menutree[] =
 {
 	{ UMENU_ROOT },
-	{ 0, "clicks", UMENU_INT, &clicks, 0, NULL },
-	{ 0, "my menu", UMENU_SUB, NULL, 0, NULL },
-		{ 1, "some submenu 0", UMENU_SUB, NULL, 0, NULL },
-		{ 1, "some submenu 1", UMENU_SUB, NULL, 0, NULL },
-		{ 1, "some submenu 2", UMENU_SUB, NULL, 0, NULL },
-		{ 1, "some submenu 3", UMENU_SUB, NULL, 0, NULL },
-			{ 2, "and even deeper submenu", UMENU_SUB, NULL, 0, NULL },
-	{ 0, "another option", UMENU_SUB, NULL, 0, NULL },
-	{ 0, "is cool", UMENU_SUB, NULL, 0, NULL },
-	{ 0, "and lovely", UMENU_SUB, NULL, 0, NULL },
+	{ 0, "Nested menus", UMENU_SUB },
+		{ 1, "And one more", UMENU_SUB },
+			{ 2, "And moore...", UMENU_SUB },
+	{ 0, "Integers", UMENU_SUB },
+		{ 1, "Key counter", UMENU_INT, &clicks, 0, 0, NULL },
+		{ 1, "LCD version", UMENU_INT | UMENU_EDIT, &lcdsimv, 2990, 3010, NULL },
+	{ 0, "Lists", UMENU_SUB },
+		{ 1, "Foreground", UMENU_LST | UMENU_EDIT, &foreground, 0, 7, "black\0red\0green\0yellow\0blue\0magenta\0cyan\0white\0" },
+		{ 1, "Background", UMENU_LST | UMENU_EDIT, &background, 0, 7, "black\0red\0green\0yellow\0blue\0magenta\0cyan\0white\0" },
 	{ UMENU_END }
 };
-#define MENU_SIZE ( sizeof( menutree ) / sizeof( menutree[0] ) ) 
+#define MENU_SIZE ( sizeof( menutree ) / sizeof( menutree[0] ) )
 
-int lcdprint( int x, int y, const char *format, ... )
-{
-	va_list args;
-	va_start( args, format );
-	wmove( lcd, y, x );
-	vwprintw( lcd, format, args );
-	va_end( args );
-	return 0;
-}
-
+//A routine to nicely exit ncurses mode
 void quit( int dummy )
 {
 	curs_set( 1 );
@@ -51,24 +44,26 @@ void quit( int dummy )
 
 int main( int argc, char **argv )
 {
-	int c = 0;
-	char buf[512];
+	int lcdx = 16, lcdy = 4, i;
+	char **lcdbuf;
 	int maxx, maxy;
-	
 	struct umenu menu;
-	umenuInit( &menu, menutree, MENU_SIZE, menutree + 2 );
-	
+
+	lcdbuf = (char**) malloc( lcdy * sizeof( char*) );
+	for ( i = 0; i < 4; i++ )
+		lcdbuf[i] = (char*) malloc( lcdx * sizeof( char ) );
+
+	//Quit on Ctrl+C
 	signal( SIGINT, quit );
-	
+
+	//Init ncurses
 	initscr( );
 	curs_set( 0 );
 	noecho( );
 	start_color( );
 	keypad( stdscr, TRUE );
-	
+
 	//Create virtual LCD
-	int lcdx = 16, lcdy = 4;
-	init_pair( 1, COLOR_WHITE, COLOR_BLUE );
 	init_pair( 2, COLOR_WHITE, COLOR_BLACK );
 	init_pair( 3, COLOR_WHITE, COLOR_WHITE );
 	getmaxyx( stdscr, maxy, maxx );
@@ -78,47 +73,51 @@ int main( int argc, char **argv )
 	wbkgd( lcdframe, COLOR_PAIR( 2 ) );
 	wbkgd( lcd, COLOR_PAIR( 1 ) );
 
+	//Init our menu structure
+	umenuInit( &menu, menutree, MENU_SIZE, menutree + 2 );
+
 	while ( 1 )
 	{
 		//Update LCD
-		//werase( lcd );
-		snprintf( buf, 512, "%s", menu.current->header );
-		//mvwprintw( lcd, 0, 0, "%s", buf );
-		umenuPrint( &menu, lcdx, lcdy, 0, 0, lcdprint ); 
-		//lcdprint( 0, 0, "dupa" );
-		mvwprintw( lcdframe, 0, ( lcdx + 2 ) / 2 - 6, "LCD SIM 3000" );
+		init_pair( 1, foreground, background );
+		umenuPrint( &menu, lcdbuf, lcdx, lcdy );
+		for ( i = 0; i < lcdy; i++ ) mvwprintw( lcd, i, 0, "%-16s", lcdbuf[i] );
+
+		mvwprintw( lcdframe, 0, ( lcdx + 2 ) / 2 - 6, "LCD SIM %d", lcdsimv );
 		wrefresh( stdscr );
 		wrefresh( lcdframe );
 		wrefresh( lcd );
-		
-		c = tolower( getch( ) );
-		
-		switch ( c )
+
+		//Interpret keyboard actions
+		switch ( tolower( getch( ) ) )
 		{
+			case KEY_LEFT:
 			case KEY_DOWN:
 				umenuInteract( &menu, UMENU_KEY_DN );
 				break;
-				
+
+			case KEY_RIGHT:
 			case KEY_UP:
 				umenuInteract( &menu, UMENU_KEY_UP );
 				break;
-				
+
 			case 10:
 				umenuInteract( &menu, UMENU_KEY_ENTER );
 				break;
-				
+
 			case KEY_BACKSPACE:
 				umenuInteract( &menu, UMENU_KEY_RETURN );
 				break;
-			
+
 			case 'q':
 			case '\\':
 				quit( 1 );
 				break;
 		}
-		
+
+		//Count keypresses
 		clicks++;
 	}
-	
-	
+
+
 }
