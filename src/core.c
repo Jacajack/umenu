@@ -24,7 +24,7 @@ const struct umenuentry *umenuChild( const struct umenuentry *entry )
 	int depth;
 	if ( entry == NULL ) return NULL;
 
-	//Iterate till boundary encounter
+	//Check next entry
 	depth = entry->depth;
 	if ( entry->vtype == UMENU_SUB )
 	{
@@ -44,6 +44,7 @@ const struct umenuentry *umenuNext( const struct umenuentry *entry )
 	depth = entry->depth;
 	while ( ( ++entry )->depth != UMENU_BOUNDARY )
 	{
+		if ( entry->depth < depth ) break;
 		if ( entry->depth == depth )
 			return entry;
 	}
@@ -60,6 +61,7 @@ const struct umenuentry *umenuPrev( const struct umenuentry *entry )
 	depth = entry->depth;
 	while ( ( --entry )->depth != UMENU_BOUNDARY )
 	{
+		if ( entry->depth < depth ) break;
 		if ( entry->depth == depth )
 			return entry;
 	}
